@@ -13,6 +13,7 @@ router.get("/page", (req, res) => {
 });
 
 router.get("/data", (req, res) => {
+  // 檔案系統的I/O ==> 非同步的動作(asynchronous)
   fs.readFile("data.json", "utf8", (err, data) => {
     // err -> 錯誤資料 ， data -> 讀取資料
     // 若有錯誤，通常沒事err 為unddfined
@@ -35,6 +36,27 @@ router.get("/data-2", (req, res) => {
   const data2 = fs.readFile("data.json", "utf8", () => {}); // 會得到undefined
   console.log(data2);
   res.send(data2);
+});
+
+router.get("/multi-data", (req, res) => {
+  // 讀 modules/data${n}.json資料
+  const result: any = {};
+  fs.readFile("./modules/data1.json", "utf8", (err, data1) => {
+    fs.readFile("./modules/data2.json", "utf8", (err, data2) => {
+      fs.readFile("./modules/data3.json", "utf8", (err, data3) => {
+        fs.readFile("./modules/data4.json", "utf8", (err, data4) => {
+          fs.readFile("./modules/data5.json", "utf8", (err, data5) => {
+            result["data1"] = JSON.parse(data1);
+            result["data2"] = JSON.parse(data2);
+            result["data3"] = JSON.parse(data3);
+            result["data4"] = JSON.parse(data4);
+            result["data5"] = JSON.parse(data5);
+            res.json(result);
+          });
+        });
+      });
+    });
+  });
 });
 
 // [module][1]講router導出，等著別人require引入使用
