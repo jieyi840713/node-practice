@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs"; //  File system ， 是Node.js 原生套件之一
 const router = express.Router(); // 產生router 物件，存入變數
 
 // 路徑設定 / API 設定
@@ -9,6 +10,18 @@ router.get("/", (req, res) => {
 
 router.get("/page", (req, res) => {
   res.json({ message: "我是/book/page 的路徑" });
+});
+
+router.get("/data", (req, res) => {
+  fs.readFile("data.json", "utf8", (err, data) => {
+    console.log(data);
+    console.log(typeof data); // 檢查資料型別
+    const result = JSON.parse(data); // 將資料轉成JSON
+    console.log(result);
+
+    res.json(result); // 回傳前端JSON資料
+    // res.send(data); // 回傳前端string資料
+  });
 });
 
 // [module][1]講router導出，等著別人require引入使用
