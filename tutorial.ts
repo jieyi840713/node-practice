@@ -15,6 +15,8 @@ console.log(JSON.parse(d1));
 console.log(JSON.parse(d2));
 console.log(JSON.parse(d3));
 
+//////////////////////////////////////////////////////////////////
+
 // 何謂Promise
 // 專門處理非同步事件的一種物件
 // 有Pending/ Fullfilled/ Rejected 三種狀態
@@ -71,15 +73,33 @@ const flipCoin = () => {
   });
 };
 
-flipCoin()
-  .then((result) => {
-    console.log("我是.then 區");
-    console.log(result);
-  })
-  .then(() => {
-    console.log("我是第二個 區");
-  })
-  .catch((err) => {
-    console.log("我是.catch 區");
+// flipCoin()
+//   .then((result) => {
+//     console.log("我是.then 區");
+//     console.log(result);
+//   })
+//   .then(() => {
+//     console.log("我是第二個 區");
+//   })
+//   .catch((err) => {
+//     console.log("我是.catch 區");
+//     console.log(err);
+//   });
+
+//////////////////////////////////////////////////////////////////
+
+// async / await (ECMAScript 2016~2017, ES7)
+
+const main = async () => {
+  // 使用try-catch 做錯誤處理
+  try {
+    const r = await flipCoin(); // 轉成"同步" 語言執行 -> 執行完才會往下走
+    //   const r = flipCoin(); // 沒加"await" -> 還是非同步
+    console.log("Async / Await 完成");
+    console.log(r);
+  } catch (err) {
     console.log(err);
-  });
+  }
+};
+
+main();
