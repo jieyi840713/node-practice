@@ -59,5 +59,36 @@ router.get("/multi-data", (req, res) => {
   });
 });
 
+const readFilePromise = (dataPath: any) => {
+  return new Promise((reslove, reject) => {
+    fs.readFile(dataPath, "utf8", (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        reslove(data);
+      }
+    });
+  });
+};
+
+router.get("/multi-data-promise", async (req, res) => {
+  const result: any = {};
+  try {
+    const data1: any = await readFilePromise("./modules/data1.json");
+    const data2: any = await readFilePromise("./modules/data2.json");
+    const data3: any = await readFilePromise("./modules/data3.json");
+    const data4: any = await readFilePromise("./modules/data4.json");
+    const data5: any = await readFilePromise("./modules/data5.json");
+    result["data1"] = JSON.parse(data1);
+    result["data2"] = JSON.parse(data2);
+    result["data3"] = JSON.parse(data3);
+    result["data4"] = JSON.parse(data4);
+    result["data5"] = JSON.parse(data5);
+    res.json(result);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
 // [module][1]講router導出，等著別人require引入使用
 export = router;
