@@ -3,7 +3,20 @@ $(function(){
     $("#drama-select-btn").click(function(){
 
         // [Coding]
-        createTable();
+
+        const type = $('#categories-select').val();
+        console.log(type)
+        // 建立 ajax 發request
+        $.ajax({
+            url: `/dramas/getDramaListData?type=${type}`,
+            type: 'GET',
+        })
+            .then(res => {
+                createTable(res.result)
+            })
+            .catch(err => {
+            
+        })
     });
 
     $("#drama-insert-btn").click(function(){
