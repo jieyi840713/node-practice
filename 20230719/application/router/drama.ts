@@ -33,13 +33,25 @@ router.get("/getDramaListData", async (req: any, res: any) => {
 
 // POST
 router.post("/createNewDramaData", async (req: any, res: any) => {
-  const createData = req.body;
-  console.log(req);
-  console.log(req.body);
+  // 取得前端傳來的form data資料
+  const payload = req.body;
   try {
+    // 將form data資料寫入 sample2.json
+    // 1. 先讀出此 Array
+    const data: any = await readFilePromise("./20230719/models/sample2.json");
+    // 2. 使用push
+    data.push(payload);
+    // 3. 再把資料寫出去 sample.json (同步處理)
+    fs.writeFileSync(
+      "./20230719/models/sample2.json",
+      JSON.stringify(data),
+      "utf8"
+    );
+
     res.send({ message: "OK" });
   } catch (err) {
-    res.send({ message: "error" });
+    console.log(err);
+    res.status(500).send({ message: "error", err });
   }
 });
 
