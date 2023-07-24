@@ -21,8 +21,18 @@ app.set("views", path.join(__dirname, "application", "views"));
 // -> 處理靜態檔相關的 requests
 app.use(express.static(path.join(__dirname, "application")));
 
-// [body-parser][1]
+// 使express 可以解析 form data
+// [body-parser][1] 解析 application/json
 app.use(bodyParser.json());
+
+// [body-parser][2] 解析 application/x-www-form-urlencoded
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+    limit: "1mb",
+    parameterLimit: 10000,
+  })
+);
 
 app.get("/", (req: any, res: any) => {
   // res.send("嗨嗨,  我是 Node.js server.");
