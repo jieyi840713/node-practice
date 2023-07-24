@@ -16,7 +16,8 @@ router.get("/page", (req: any, res: any) => {
 });
 
 // GET /dramas/getDramaListData
-router.get("/getDramaListData", async (req: any, res: any) => {
+router.get("/list", async (req: any, res: any) => {
+  // router.get("/getDramaListData", async (req: any, res: any) => { // API不佳
   const { type } = req.query;
   try {
     const data: any = await readFilePromise("./20230719/models/sample2.json");
@@ -32,7 +33,8 @@ router.get("/getDramaListData", async (req: any, res: any) => {
 });
 
 // POST
-router.post("/createNewDramaData", async (req: any, res: any) => {
+router.post("/data", async (req: any, res: any) => {
+  // router.post("/createNewDramaData", async (req: any, res: any) => {
   // 取得前端傳來的form data資料
   const payload = req.body;
   try {

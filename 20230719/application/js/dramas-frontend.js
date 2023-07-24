@@ -8,7 +8,7 @@ $(function(){
         console.log(type)
         // 建立 ajax 發request
         $.ajax({
-            url: `/dramas/getDramaListData?type=${type}`,
+            url: `/dramas/list?type=${type}`,
             type: 'GET',
         })
             .then(res => {
@@ -66,7 +66,7 @@ let insertNewRecord = ()=> {
 
 
     $.ajax({
-        url  : "/dramas/createNewDramaData",
+        url  : "/dramas/data",
         type : "POST",
 
         //// 以 application/x-www-form-urlencoded 資料傳送
