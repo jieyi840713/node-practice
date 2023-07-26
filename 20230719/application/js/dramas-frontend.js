@@ -8,14 +8,16 @@ $(function(){
         console.log(type)
         // 建立 ajax 發request
         $.ajax({
-            url: `/dramas/list?type=${type}`,
+            // url: `/dramas/list`, // 1. 沒帶type
+            // url: `/dramas/list?type=abcd`, // 2. type 亂帶
+            url: `/dramas/list?type=${type}`, // 3. 正常
             type: 'GET',
         })
             .then(res => {
                 createTable(res.result)
             })
             .catch(err => {
-            
+            alert(err.responseJSON.message)
         })
     });
 

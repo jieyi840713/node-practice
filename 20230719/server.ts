@@ -4,7 +4,7 @@ import express from "express";
 import hbs from "hbs";
 import path from "path";
 import bodyParser from "body-parser";
-import dramaRouter from "./application/router/drama";
+import dramaRouter from "./application/router/drama.controller";
 import aboutRouter from "./application/router/about";
 const app = express();
 const portNum = 8088;
