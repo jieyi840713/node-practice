@@ -4,15 +4,28 @@ import express from "express";
 import hbs from "hbs";
 import path from "path";
 import bodyParser from "body-parser";
+import session from "express-session";
 import dramaRouter from "./application/router/drama.controller";
 import aboutRouter from "./application/router/about";
+import authRouter from "./application/router/auth";
 const app = express();
-const portNum = 9099;
+const portNum = 8088;
 
 // 設定模板引擎
 app.engine("html", hbs.__express);
 app.set("views", path.join(__dirname, "application", "views"));
 app.use(express.static(path.join(__dirname, "application")));
+
+// 處理 session 資料的 Middleware
+// 後面才可以用req.session 做資料存取
+app.use(
+  session({
+    secret: "cc90dis90#",
+    resave: true,
+    saveUninitialized: false,
+    name: "_ntust_tutorial_id",
+  })
+);
 
 // 使用body-parser 處理form-data
 app.use(bodyParser.json());
@@ -32,41 +45,26 @@ app.get("/", (req: any, res: any) => {
 
 app.use("/dramas", dramaRouter);
 app.use("/about", aboutRouter);
+app.use("/auth", authRouter);
 app.get("/about", (req: any, res: any) => {
   res.render("aboutus.html");
 });
 
+// 登入驗證
+// 1. 加入login頁面
+// 2. POST/auth API 驗證 + 紀錄資料到session 上
+// 3. GET/logout 登出 API
+// 4. 加入登入驗證 middleware (isUserLogined)
 app.get(
   "/login",
-  (req: any, res: any, next) => {
-    // [1] 顯示前端name 參數
-    console.log(`你好 ${req.query.name}`);
-    // [2] MiddleWare 傳參數
-    // req (request 物件) 上傳參數
-    req.test = { name: "Mars", age: 28 };
-
-    // [3] 往下一個 MiddleWare (中介函式) 執行
-    // next();
-
-    // [4] 檢查name 參數是否存在
-    // V -> OK, 往下執行
-    // X -> 傳回 {message: 'name 參數人呢'}
-    if (req.query.name === undefined) res.send({ message: "name 參數人呢" });
+  (req: any, res, next) => {
+    console.log(req.session.userInfo);
+    if (!req.session.userInfo || !req.session.userInfo.isLogin)
+      res.render("login.html");
     else next();
   },
-  (req: any, res, next) => {
-    // 100%確保name 參數存在
-    console.log("我是middle Ware2");
-    console.log(`你今年 ${req.query.age} 歲`);
-    console.log(req.test);
-    next();
-  },
-  (req, res, next) => {
-    console.log("我是middle Ware3");
-    next();
-  },
-  (req, res, next) => {
-    res.send("Hello, Node.js gogo");
+  (req: any, res: any, next) => {
+    res.render("index.html");
   }
 );
 
