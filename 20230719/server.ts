@@ -9,23 +9,13 @@ import aboutRouter from "./application/router/about";
 const app = express();
 const portNum = 8088;
 
-// [Views][1]設定模板引擎 (解析html 檔，讓 express 看懂html檔)
-// hbs -> handlebars 為一種模板引擎
-// 另外一種熱門的 -> pug
+// 設定模板引擎
 app.engine("html", hbs.__express);
-
-// [Views][2]設定模板(template)位置
 app.set("views", path.join(__dirname, "application", "views"));
-
-// [Views][3]設定靜態檔案的位置 (讀取*.css/ *.js / *.jpg / *.png / *.mp4 / ...)
-// -> 處理靜態檔相關的 requests
 app.use(express.static(path.join(__dirname, "application")));
 
-// 使express 可以解析 form data
-// [body-parser][1] 解析 application/json
+// 使用body-parser 處理form-data
 app.use(bodyParser.json());
-
-// [body-parser][2] 解析 application/x-www-form-urlencoded
 app.use(
   bodyParser.urlencoded({
     extended: false, // 是否用額外套件解析字串
@@ -42,14 +32,43 @@ app.get("/", (req: any, res: any) => {
 
 app.use("/dramas", dramaRouter);
 app.use("/about", aboutRouter);
-
-app.get("/test", (req: any, res: any) => {
-  res.render("template.html");
-});
-
 app.get("/about", (req: any, res: any) => {
   res.render("aboutus.html");
 });
+
+app.get(
+  "/hello",
+  (req: any, res: any, next) => {
+    // [1] 顯示前端name 參數
+    console.log(`你好 ${req.query.name}`);
+    // [2] MiddleWare 傳參數
+    // req (request 物件) 上傳參數
+    req.test = { name: "Mars", age: 28 };
+
+    // [3] 往下一個 MiddleWare (中介函式) 執行
+    // next();
+
+    // [4] 檢查name 參數是否存在
+    // V -> OK, 往下執行
+    // X -> 傳回 {message: 'name 參數人呢'}
+    if (req.query.name === undefined) res.send({ message: "name 參數人呢" });
+    else next();
+  },
+  (req: any, res, next) => {
+    // 100%確保name 參數存在
+    console.log("我是middle Ware2");
+    console.log(`你今年 ${req.query.age} 歲`);
+    console.log(req.test);
+    next();
+  },
+  (req, res, next) => {
+    console.log("我是middle Ware3");
+    next();
+  },
+  (req, res, next) => {
+    res.send("Hello, Node.js gogo");
+  }
+);
 
 app.listen(portNum, () => {
   console.log(`Server is running at localhost:${portNum}`);
