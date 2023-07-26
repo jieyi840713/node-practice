@@ -1,5 +1,6 @@
 import express from "express";
 import fs from "fs";
+import validator from "../../utils/validator";
 const router = express.Router();
 
 const readFilePromise = (dataPath: string) => {
@@ -16,9 +17,12 @@ router.get("/page", (req: any, res: any) => {
 });
 
 // [Work 1] 檢查參數
+// [Work 3] 使用共用的Middleware (實名Middleware)
 // GET /dramas/getDramaListData
 router.get(
   "/list",
+  validator.isTokenExist,
+  validator.isTokenValid,
   // 1. 檢查 type 參數是否存在
   (req, res, next) => {
     // 調整status_code = 400 --> 前端接到，才會進到error區的程式
