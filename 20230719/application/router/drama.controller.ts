@@ -16,13 +16,14 @@ router.get("/page", (req: any, res: any) => {
   res.render("dramas.html");
 });
 
+// .use -> request 100% 會經過的 Middleware
+router.use(validator.isTokenExist, validator.isTokenValid);
+
 // [Work 1] 檢查參數
 // [Work 3] 使用共用的Middleware (實名Middleware)
 // GET /dramas/getDramaListData
 router.get(
   "/list",
-  validator.isTokenExist,
-  validator.isTokenValid,
   // 1. 檢查 type 參數是否存在
   (req, res, next) => {
     // 調整status_code = 400 --> 前端接到，才會進到error區的程式
@@ -58,18 +59,18 @@ router.get(
 router.post(
   "/data",
   // 1. 檢查 headers 上是否有 token (M1)
-  (req, res, next) => {
-    // 檢查 headers -> req.headers
-    if (!req.headers["x-mars-token"])
-      res.status(400).json({ message: "token 不存在" });
-    else next();
-  },
+  // (req, res, next) => {
+  //   // 檢查 headers -> req.headers
+  //   if (!req.headers["x-mars-token"])
+  //     res.status(400).json({ message: "token 不存在" });
+  //   else next();
+  // },
   // 2. 檢查 token 值是否正確 (M2)
-  (req: any, res, next) => {
-    if (req.headers["x-mars-token"] !== "APTX4869")
-      res.status(403).json({ message: "無權限" });
-    else next();
-  },
+  // (req: any, res, next) => {
+  //   if (req.headers["x-mars-token"] !== "APTX4869")
+  //     res.status(403).json({ message: "無權限" });
+  //   else next();
+  // },
   // 3. 處理業務邏輯 (M3)
   async (req: any, res: any) => {
     // router.post("/createNewDramaData", async (req: any, res: any) => {
