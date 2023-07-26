@@ -69,7 +69,16 @@ let insertNewRecord = ()=> {
 
     $.ajax({
         url  : "/dramas/data",
-        type : "POST",
+        type: "POST",
+        
+        // 新增 headers key-value pair
+        headers: {
+            // 1. 沒帶token
+            // 2. token帶錯
+            // "x-mars-token":"ZZZ",
+            // 3. 正常
+            "x-mars-token":"APTX4869"
+        },
 
         //// 以 application/x-www-form-urlencoded 資料傳送
         data : {
@@ -97,12 +106,12 @@ let insertNewRecord = ()=> {
     })
     .catch(err=>{
         console.log(err);
-
-        if(err.status === 404){
-            alert("找不到該 API !");
-            return;
-        };
+        alert(err.responseJSON.message)
+        // if(err.status === 404){
+        //     alert("找不到該 API !");
+        //     return;
+        // };
         
-        alert("系統有誤 , 請稍後再試！");
+        // alert("系統有誤 , 請稍後再試！");
     });
 };

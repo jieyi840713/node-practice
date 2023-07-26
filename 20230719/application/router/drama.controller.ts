@@ -15,6 +15,7 @@ router.get("/page", (req: any, res: any) => {
   res.render("dramas.html");
 });
 
+// [Work 1] 檢查參數
 // GET /dramas/getDramaListData
 router.get(
   "/list",
@@ -48,7 +49,47 @@ router.get(
   }
 );
 
+// [Work 2] 加入 API token 檢查機制，預期使用者 token 寫在 headers 上面
 // POST
-router.post("/data", async (req: any, res: any) => {});
+router.post(
+  "/data",
+  // 1. 檢查 headers 上是否有 token (M1)
+  (req, res, next) => {
+    // 檢查 headers -> req.headers
+    if (!req.headers["x-mars-token"])
+      res.status(400).json({ message: "token 不存在" });
+    else next();
+  },
+  // 2. 檢查 token 值是否正確 (M2)
+  (req: any, res, next) => {
+    if (req.headers["x-mars-token"] !== "APTX4869")
+      res.status(403).json({ message: "無權限" });
+    else next();
+  },
+  // 3. 處理業務邏輯 (M3)
+  async (req: any, res: any) => {
+    // router.post("/createNewDramaData", async (req: any, res: any) => {
+    // 取得前端傳來的form data資料
+    const payload = req.body;
+    try {
+      // 將form data資料寫入 sample2.json
+      // 1. 先讀出此 Array
+      const data: any = await readFilePromise("./20230719/models/sample2.json");
+      // 2. 使用push
+      data.push(payload);
+      // 3. 再把資料寫出去 sample.json (同步處理)
+      fs.writeFileSync(
+        "./20230719/models/sample2.json",
+        JSON.stringify(data),
+        "utf8"
+      );
+
+      res.send({ message: "OK" });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({ message: "error", err });
+    }
+  }
+);
 
 export = router;
