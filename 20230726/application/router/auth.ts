@@ -12,7 +12,7 @@ router.post(
   validator.setSessionInfo,
   // 4. response 回應前端
   (req, res) => {
-    res.send("接到了，等待開發");
+    res.json({ message: "OK", redirect: "/" });
   }
 );
 

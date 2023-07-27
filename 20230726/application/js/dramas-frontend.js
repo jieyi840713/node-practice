@@ -12,6 +12,8 @@ $(function(){
             // url: `/dramas/list?type=abcd`, // 2. type 亂帶
             url: `/dramas/list?type=${type}`, // 3. 正常
             type: 'GET',
+            headers:{"x-mars-token":"APTX4869"}
+            
         })
             .then(res => {
                 createTable(res.result)

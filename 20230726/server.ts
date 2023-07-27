@@ -8,6 +8,7 @@ import session from "express-session";
 import dramaRouter from "./application/router/drama.controller";
 import aboutRouter from "./application/router/about";
 import authRouter from "./application/router/auth";
+import validator from "./utils/validator";
 const app = express();
 const portNum = 8088;
 
@@ -37,14 +38,14 @@ app.use(
   })
 );
 
-app.get("/", (req: any, res: any) => {
+app.get("/", validator.isUserLogined, (req: any, res: any) => {
   // res.send("嗨嗨,  我是 Node.js server.");
   // [4]使用 .render (渲染) 回傳html介面
   res.render("index.html");
 });
 
-app.use("/dramas", dramaRouter);
-app.use("/about", aboutRouter);
+app.use("/dramas", validator.isUserLogined, dramaRouter);
+app.use("/about", validator.isUserLogined, aboutRouter);
 app.use("/auth", authRouter);
 app.get("/about", (req: any, res: any) => {
   res.render("aboutus.html");
@@ -54,6 +55,10 @@ app.get("/about", (req: any, res: any) => {
 // 1. 加入login頁面
 // 2. POST/auth API 驗證 + 紀錄資料到session 上
 // 3. GET/logout 登出 API
+app.get("/logout", (req: any, res) => {
+  req.session.userInfo = {};
+  res.redirect("/login");
+});
 // 4. 加入登入驗證 middleware (isUserLogined)
 app.get(
   "/login",
@@ -64,7 +69,7 @@ app.get(
     else next();
   },
   (req: any, res: any, next) => {
-    res.render("index.html");
+    res.redirect("/");
   }
 );
 

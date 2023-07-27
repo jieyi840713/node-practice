@@ -1,5 +1,7 @@
 const isTokenExist = (req: any, res: any, next: any) => {
   // 檢查 headers -> req.headers
+  console.log(req.headers);
+  console.log(req.headers["x-mars-token"]);
   if (!req.headers["x-mars-token"])
     res.status(400).json({ message: "token 不存在" });
   else next();
@@ -34,10 +36,17 @@ const setSessionInfo = (req: any, res: any, next: any) => {
   next();
 };
 
+const isUserLogined = (req: any, res: any, next: any) => {
+  if (!req.session.userInfo || !req.session.userInfo.isLogin)
+    res.redirect("/login");
+  else next();
+};
+
 export = {
   isTokenExist,
   isTokenValid,
   isAccountAndPasswdExit,
   isUserValid,
   setSessionInfo,
+  isUserLogined,
 };
