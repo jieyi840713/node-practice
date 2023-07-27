@@ -9,6 +9,17 @@ import dramaRouter from "./application/router/drama.controller";
 import aboutRouter from "./application/router/about";
 import authRouter from "./application/router/auth";
 import validator from "./utils/validator";
+
+// [Session 外存][1]
+// 追加 redis 套件 (Node.js 使用)
+// import { createClient } from "redis";
+// const redisClient = createClient(); // 產生 redisClient 的連線實例 (Instance)
+
+// [Session 外存][2]
+// 追加 connect-redis 套件 (專門為express設計的對接套件)
+// import connectRedis from "connect-redis";
+// const redisStore = connectRedis(session);
+
 const app = express();
 const portNum = 8088;
 
@@ -21,10 +32,10 @@ app.use(express.static(path.join(__dirname, "application")));
 // 後面才可以用req.session 做資料存取
 app.use(
   session({
-    secret: "cc90dis90#",
-    resave: true,
-    saveUninitialized: false,
-    name: "_ntust_tutorial_id",
+    secret: "cc90dis90#", // session 資料加密用
+    resave: true, // 不論修改，是否要回存到store 上
+    saveUninitialized: false, // 初始化的session，是否要存到stroe 上
+    name: "_ntust_tutorial_id", // cookie 的 key 值
   })
 );
 
@@ -37,6 +48,11 @@ app.use(
     parameterLimit: 10000, // 限制參數個數
   })
 );
+
+app.use((req, res, next) => {
+  console.log(req.session);
+  next();
+});
 
 app.get("/", validator.isUserLogined, (req: any, res: any) => {
   // res.send("嗨嗨,  我是 Node.js server.");
@@ -56,7 +72,8 @@ app.get("/about", (req: any, res: any) => {
 // 2. POST/auth API 驗證 + 紀錄資料到session 上
 // 3. GET/logout 登出 API
 app.get("/logout", (req: any, res) => {
-  req.session.userInfo = {};
+  req.session.destroy();
+  res.clearCookie("_ntust_tutorial_id");
   res.redirect("/login");
 });
 // 4. 加入登入驗證 middleware (isUserLogined)
