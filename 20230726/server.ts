@@ -5,7 +5,7 @@ import hbs from "hbs";
 import path from "path";
 import bodyParser from "body-parser";
 import session from "express-session";
-import dramaRouter from "./application/router/drama.controller";
+import dramaRouter from "./application/router/drama";
 import aboutRouter from "./application/router/about";
 import authRouter from "./application/router/auth";
 import validator from "./utils/validator";
