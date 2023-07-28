@@ -32,16 +32,35 @@ const dramaShema = new mongoose.Schema(
 //   "score" : NumberInt(10)
 // }
 
-// 建立 Model 物件
+// 建立 Model 物件 (在 conn 連線上，建立一個物件)
 const dramaModel = conn.model("Dramas", dramaShema);
 
 // 3. 透過 Model物件 進行 CRUD 操作
 // 非同步的動作 --> 使用Promise 操作
-dramaModel
-  .find()
-  .then((data) => {
-    console.log(data);
-  })
-  .catch((err) => {
+// dramaModel
+//   .find()
+//   .then((data) => {
+//     console.log(data);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
+// Async / Await 處理
+const main = async () => {
+  try {
+    // const data = await dramaModel.find();
+    // console.log(data);
+
+    // [補充] .find(條件 , 顯示欄位)
+    const data2 = await dramaModel.find(
+      { category: "政治" },
+      { category: 1, name: 1, score: 1, _id: 0 }
+    );
+    console.log(data2);
+  } catch (err) {
     console.log(err);
-  });
+  }
+};
+
+main();
