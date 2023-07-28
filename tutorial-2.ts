@@ -63,4 +63,42 @@ const main = async () => {
   }
 };
 
-main();
+const membersShema = new mongoose.Schema(
+  {
+    name: String,
+    age: Number,
+    math_score: Number,
+  },
+  {
+    collection: "members", // 要操作 collectoin 的 table 名稱
+    versionKey: false,
+  }
+);
+
+const membersModel = conn.model("Member", membersShema);
+
+const findMain = async () => {
+  try {
+    const data = await membersModel.find({ math_score: { $gte: 60 } }); // 找math_score 分數大於60
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// findMain();
+
+const insertMain = async () => {
+  try {
+    const result = await membersModel.create({
+      name: "bbb",
+      age: 9,
+      math_score: 100,
+    });
+    console.log("新增的資料" + result);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+insertMain();
